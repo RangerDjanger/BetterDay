@@ -2,5 +2,5 @@ using '../main.bicep'
 
 param environment = 'dev'
 param location = 'australiaeast'
-param repositoryUrl = 'https://github.com/RangerDjanger/Habit-tracker'
+param repositoryUrl = 'https://github.com/RangerDjanger/BetterDay'
 param branch = 'main'
