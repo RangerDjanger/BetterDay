@@ -161,7 +161,7 @@ interface HabitRepository {
 - [ ] Implement localStorage cache layer for offline support (sync when back online)
 - [ ] Implement streak/stats calculation utility (`calcStreak`, `calcStats`)
 - [ ] Seed default habits on first launch (5 categories, 11 habits + 2 trackers):
-  - **📵 Phone Free:** "Phone Free Before Work", "Phone Free After Work", "Phone Free Weekend"
+  - **📵 Device Free:** "Device Free Before Work", "Device Free After Work", "Device Free Weekend"
   - **🏠 Presence & Connection:** "Device-Free Dinner", "10-Minute 1-on-1 with Each Child", "Eye Contact Conversation", "Family Activity", "Active Listening Moment"
   - **😌 Kindness & Calm:** "Morning Calm Routine", "No Raised Voice Day"
   - **📝 Accountability:** "Daily Reflection Journal" (end-of-day prompt: what went well / what to improve)
@@ -180,7 +180,7 @@ interface HabitRepository {
 - [ ] Build `ReportsPage` — beautiful charts/graphs (Recharts) including:
   - **Overall Completion Rate** — area chart showing daily/weekly % of habits completed over time
   - **Streak Progress** — radial/ring chart per habit showing progress toward 30-day goal
-  - **Category Breakdown** — stacked bar chart (Phone Free vs Presence vs Calm) showing which areas are strongest
+  - **Category Breakdown** — stacked bar chart (Device Free vs Presence vs Calm) showing which areas are strongest
   - **Mood Trend** — line chart overlaying morning & evening mood scores over time
   - **Weekly Heatmap** — GitHub-style contribution grid showing completions per day
   - **Best Streaks Leaderboard** — ranked list of habits by best streak with trophy icons
@@ -227,7 +227,7 @@ interface HabitRepository {
 - Streaks only count active days — e.g., a Mon/Wed/Fri habit won't break its streak on Tuesday. The 30-day goal counts 30 *completed active days*, not calendar days.
 - **Streak goal is 30 days minimum.** Each habit shows progress toward the 30-day goal (e.g., "Day 12 of 30") with a visual indicator. Completing 30 days triggers a celebration/badge.
 - **Starting habits:** On first launch, the app seeds 9 default habits across 3 categories:
-  - 📵 **Phone Free:** Before Work, After Work, Weekend
+  - 📵 **Device Free:** Before Work, After Work, Weekend
   - 🏠 **Presence:** Device-Free Dinner, 10-Min 1-on-1 with Each Child, Eye Contact Conversation, Family Activity, Active Listening Moment
   - 😌 **Calm:** Morning Calm Routine (5 min breathing/meditation), No Raised Voice Day
   Users can edit, delete, or add more habits at any time.

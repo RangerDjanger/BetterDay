@@ -21,7 +21,7 @@ BetterDay ships with starter habits across four categories:
 
 | Category | Habits |
 |---|---|
-| 📵 **Phone Free** | Before Work, After Work, Weekend |
+| 📵 **Device Free** | Before Work, After Work, Weekend |
 | 🏠 **Presence & Connection** | Device-Free Dinner, 10-Min 1-on-1 with Each Child, Eye Contact Conversation, Family Activity, Active Listening Moment |
 | 😌 **Kindness & Calm** | Morning Calm Routine, No Raised Voice Day |
 | 📝 **Accountability** | Daily Reflection Journal |
