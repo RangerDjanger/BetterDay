@@ -31,8 +31,8 @@ module functionApp 'modules/function-app.bicep' = {
     environment: environment
     location: location
     storageAccountName: tableStorage.outputs.storageAccountName
-    storageAccountKey: tableStorage.outputs.storageAccountKey
   }
+  dependsOn: [tableStorage]
 }
 
 module tableStorage 'modules/table-storage.bicep' = {

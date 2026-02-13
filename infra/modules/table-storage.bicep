@@ -46,4 +46,4 @@ resource userSettingsTable 'Microsoft.Storage/storageAccounts/tableServices/tabl
 }
 
 output storageAccountName string = storageAccount.name
-output storageAccountKey string = storageAccount.listKeys().keys[0].value
+output storageAccountId string = storageAccount.id

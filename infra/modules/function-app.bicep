@@ -7,14 +7,14 @@ param location string
 @description('Storage account name for Table Storage')
 param storageAccountName string
 
-@description('Storage account key')
-@secure()
-param storageAccountKey string
-
 var appName = 'betterday-func-${environment}'
 var hostingPlanName = 'betterday-plan-${environment}'
 var appInsightsName = 'betterday-insights-${environment}'
 var funcStorageName = 'betterdayfn${environment}'
+
+resource dataStorage 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
+  name: storageAccountName
+}
 
 resource funcStorage 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: funcStorageName
@@ -70,7 +70,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         }
         {
           name: 'TableStorageConnection'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${storageAccountKey}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};AccountKey=${dataStorage.listKeys().keys[0].value}'
         }
       ]
       netFrameworkVersion: 'v8.0'
