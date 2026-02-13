@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Azure Functions (C#)
+api/bin/
+api/obj/
+api/*.user
+api/local.settings.json
+
+# PWA dev
+dev-dist/
+
+# Test coverage
+coverage/
