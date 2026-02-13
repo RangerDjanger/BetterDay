@@ -12,11 +12,14 @@ param repositoryUrl string = 'https://github.com/RangerDjanger/Habit-tracker'
 @description('Branch for Static Web App')
 param branch string = 'main'
 
+@description('Location for Static Web App (limited region support)')
+param swaLocation string = 'westus2'
+
 module staticWebApp 'modules/static-web-app.bicep' = {
   name: 'swa-${environment}'
   params: {
     environment: environment
-    location: location
+    location: swaLocation
     repositoryUrl: repositoryUrl
     branch: branch
   }
