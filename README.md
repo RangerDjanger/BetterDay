@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# BetterDay
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A mobile-friendly Progressive Web App for daily habit tracking — built to help you be more present, calm, and connected with your family.
 
-Currently, two official plugins are available:
+## What It Does
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+BetterDay helps you build and maintain positive daily habits with:
 
-## React Compiler
+- **Daily habit tracking** — check off habits each day with a simple card-based UI
+- **Streak tracking** — monitor your current and best streaks with a 30-day goal system
+- **Mood check-ins** — rate your morning and evening mood (1–5 scale) and track trends over time
+- **Daily reflections** — end-of-day journal prompts ("What went well? What to improve?")
+- **Reports & analytics** — beautiful charts for completion rates, streak progress, category breakdowns, mood trends, and more
+- **Milestone rewards** — earn badges at 7, 14, 21, and 30 days — including a "Date Night Unlocked! 🎉" celebration
+- **Email summaries** — daily progress emails and weekly recaps sent automatically, plus an optional weekly email to your partner with an AI-generated loving quote
+- **PWA support** — installable on your phone, works offline
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Default Habits
 
-## Expanding the ESLint configuration
+BetterDay ships with starter habits across four categories:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| Category | Habits |
+|---|---|
+| 📵 **Device Free** | Before Work, After Work, Weekend |
+| 🏠 **Presence & Connection** | Device-Free Dinner, 10-Min 1-on-1 with Each Child, Eye Contact Conversation, Family Activity, Active Listening Moment |
+| 😌 **Kindness & Calm** | Morning Calm Routine, No Raised Voice Day |
+| 📝 **Accountability** | Daily Reflection Journal |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 18+, TypeScript, Vite, Tailwind CSS |
+| **Backend** | Azure Functions (C#, serverless) |
+| **Database** | Azure Table Storage |
+| **Auth** | Microsoft (MSA) via Azure Static Web Apps built-in auth |
+| **Hosting** | Azure Static Web Apps (free tier) |
+| **IaC** | Bicep templates |
+| **CI/CD** | GitHub Actions (separate pipelines for infra and app) |
+| **AI** | Azure AI Foundry (for generating partner email quotes) |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+
+```
+├── .github/workflows/    # CI/CD pipelines
+├── api/                  # C# Azure Functions backend
+│   ├── Functions/        # HTTP & Timer triggers
+│   ├── Models/           # Table Storage entities
+│   └── Services/         # Business logic & data access
+├── infra/                # Bicep IaC templates
+│   ├── modules/          # SWA, Functions, Storage, AI modules
+│   └── parameters/       # Dev & Prod parameters
+├── public/               # Static assets & PWA icons
+└── src/                  # React frontend
+    ├── components/       # UI components by feature
+    ├── context/          # React Context providers
+    ├── hooks/            # Custom hooks
+    ├── pages/            # Route-level pages
+    ├── services/         # API client & repository layer
+    ├── types/            # TypeScript interfaces
+    └── utils/            # Helpers & streak calculations
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# Install dependencies
+npm install
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
 ```
+
+## Environments
+
+| Environment | Trigger | Approval |
+|---|---|---|
+| **Dev** | Auto-deploy on push to `main` | None |
+| **Prod** | Manual promotion | Approval gate |
+
+## License
+
+Private project.
