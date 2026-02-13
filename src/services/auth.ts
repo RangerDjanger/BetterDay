@@ -1,6 +1,14 @@
 import type { UserInfo } from '../types';
 
 export async function getUserInfo(): Promise<UserInfo | null> {
+  if (import.meta.env.DEV) {
+    return {
+      userId: 'dev-user',
+      userDetails: 'Developer',
+      identityProvider: 'dev',
+      userRoles: ['authenticated'],
+    };
+  }
   try {
     const res = await fetch('/.auth/me');
     const data = await res.json();
