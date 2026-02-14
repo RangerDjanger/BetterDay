@@ -4,6 +4,7 @@ import { HabitProvider } from './context/HabitContext';
 import { ReflectionProvider } from './context/ReflectionContext';
 import { MoodProvider } from './context/MoodContext';
 import { CoachProvider } from './context/CoachContext';
+import { ReminderProvider } from './context/ReminderContext';
 import AppShell from './components/layout/AppShell';
 import TodayPage from './pages/TodayPage';
 import ReportsPage from './pages/ReportsPage';
@@ -48,7 +49,9 @@ export default function App() {
           <ReflectionProvider>
             <MoodProvider>
               <CoachProvider>
-                <ProtectedRoutes />
+                <ReminderProvider>
+                  <ProtectedRoutes />
+                </ReminderProvider>
               </CoachProvider>
             </MoodProvider>
           </ReflectionProvider>

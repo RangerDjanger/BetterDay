@@ -50,39 +50,39 @@ export default function HabitForm() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-blue-soft-dark mb-6">
+      <h1 className="text-2xl font-bold text-text-primary mb-6">
         {existing ? 'Edit Habit' : 'Add Habit'}
       </h1>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <label className="block text-sm font-medium text-text-secondary mb-1">Name</label>
           <input
             type="text"
             value={name}
             onChange={e => setName(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-soft"
+            className="w-full rounded-lg border border-border bg-surface-light px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-soft focus:border-transparent placeholder:text-text-muted"
             placeholder="e.g. Morning Meditation"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <label className="block text-sm font-medium text-text-secondary mb-1">Description</label>
           <input
             type="text"
             value={description}
             onChange={e => setDescription(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-soft"
+            className="w-full rounded-lg border border-border bg-surface-light px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-soft focus:border-transparent placeholder:text-text-muted"
             placeholder="Optional description"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <label className="block text-sm font-medium text-text-secondary mb-1">Category</label>
           <select
             value={category}
             onChange={e => setCategory(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-soft"
+            className="w-full rounded-lg border border-border bg-surface-light px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-soft focus:border-transparent"
           >
             {defaultCategories.map(c => (
               <option key={c} value={c}>{c}</option>
@@ -91,7 +91,7 @@ export default function HabitForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Active Days</label>
+          <label className="block text-sm font-medium text-text-secondary mb-2">Active Days</label>
           <div className="flex gap-1">
             {dayLabels.map((label, i) => (
               <button
@@ -101,7 +101,7 @@ export default function HabitForm() {
                 className={`flex-1 py-2 rounded-lg text-xs font-medium transition ${
                   activeDays.includes(i)
                     ? 'bg-blue-soft text-white'
-                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    : 'bg-surface-light text-text-muted hover:bg-surface-light/80 border border-border'
                 }`}
               >
                 {label}
@@ -111,12 +111,13 @@ export default function HabitForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Reminder Time</label>
+          <label className="block text-sm font-medium text-text-secondary mb-1">Reminder Time</label>
+          <p className="text-xs text-text-muted mb-1.5">Get a notification when it's time for this habit</p>
           <input
             type="time"
             value={reminderTime}
             onChange={e => setReminderTime(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-soft"
+            className="w-full rounded-lg border border-border bg-surface-light px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-soft focus:border-transparent"
           />
         </div>
 
@@ -130,7 +131,7 @@ export default function HabitForm() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="flex-1 bg-gray-100 text-gray-600 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition"
+            className="flex-1 bg-surface-light text-text-secondary py-2.5 rounded-lg font-medium border border-border hover:bg-surface-light/80 transition"
           >
             Cancel
           </button>
