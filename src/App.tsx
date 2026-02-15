@@ -6,6 +6,7 @@ import { MoodProvider } from './context/MoodContext';
 import { CoachProvider } from './context/CoachContext';
 import { ReminderProvider } from './context/ReminderContext';
 import AppShell from './components/layout/AppShell';
+import LoginPage from './components/auth/LoginPage';
 import TodayPage from './pages/TodayPage';
 import ReportsPage from './pages/ReportsPage';
 import ReflectPage from './pages/ReflectPage';
@@ -15,7 +16,7 @@ import HabitDetailPage from './pages/HabitDetailPage';
 import HabitForm from './components/habits/HabitForm';
 
 function ProtectedRoutes() {
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -24,6 +25,8 @@ function ProtectedRoutes() {
       </div>
     );
   }
+
+  if (!user) return <LoginPage />;
 
   return (
     <Routes>

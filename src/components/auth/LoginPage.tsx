@@ -11,10 +11,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-warm flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 max-w-sm w-full text-center">
-        <h1 className="text-3xl font-bold text-blue-soft-dark mb-2">BetterDay</h1>
-        <p className="text-gray-500 mb-8">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <div className="bg-surface rounded-2xl shadow-lg border border-border p-8 max-w-sm w-full text-center">
+        <h1 className="text-3xl font-bold text-text-primary mb-2">BetterDay</h1>
+        <p className="text-text-muted mb-8">
           Track your habits. Build your streaks. Be more present.
         </p>
         <a

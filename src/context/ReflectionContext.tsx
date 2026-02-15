@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { Reflection } from '../types';
+import * as api from '../services/api';
 
 const STORAGE_KEY = 'betterday-reflections';
 
@@ -20,8 +21,22 @@ export function ReflectionProvider({ children }: { children: ReactNode }) {
   const [reflections, setReflections] = useState<Reflection[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) setReflections(JSON.parse(stored));
+    let cancelled = false;
+    (async () => {
+      try {
+        const remote = await api.fetchReflections();
+        if (!cancelled) {
+          setReflections(remote);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(remote));
+        }
+      } catch {
+        if (!cancelled) {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored) setReflections(JSON.parse(stored));
+        }
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -38,6 +53,7 @@ export function ReflectionProvider({ children }: { children: ReactNode }) {
       }
       return [r, ...prev];
     });
+    api.saveReflectionApi(r).catch(() => {});
   }, []);
 
   const getReflection = useCallback(

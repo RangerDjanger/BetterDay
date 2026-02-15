@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import type { ReactNode } from 'react';
 import type { Habit, HabitLog } from '../types';
 import { seedHabits } from '../data/seedHabits';
+import * as api from '../services/api';
 
 const HABITS_KEY = 'betterday-habits';
 const LOGS_KEY = 'betterday-logs';
@@ -31,7 +32,6 @@ const HabitContext = createContext<HabitContextType>({
 function loadHabits(): Habit[] {
   const stored = localStorage.getItem(HABITS_KEY);
   if (stored) return JSON.parse(stored);
-  // First launch — seed defaults
   localStorage.setItem(HABITS_KEY, JSON.stringify(seedHabits));
   return seedHabits;
 }
@@ -41,36 +41,77 @@ function loadLogs(): HabitLog[] {
   return stored ? JSON.parse(stored) : [];
 }
 
+function cacheHabits(habits: Habit[]) {
+  localStorage.setItem(HABITS_KEY, JSON.stringify(habits));
+}
+
+function cacheLogs(logs: HabitLog[]) {
+  localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
+}
+
 export function HabitProvider({ children }: { children: ReactNode }) {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [logs, setLogs] = useState<HabitLog[]>([]);
 
+  // Load: try API first, fall back to localStorage
   useEffect(() => {
-    setHabits(loadHabits());
-    setLogs(loadLogs());
+    let cancelled = false;
+    (async () => {
+      try {
+        const remote = await api.fetchHabits();
+        if (!cancelled) {
+          const h = remote.length ? remote : loadHabits();
+          setHabits(h);
+          cacheHabits(h);
+        }
+      } catch {
+        if (!cancelled) setHabits(loadHabits());
+      }
+
+      // Load logs for all habits
+      try {
+        const localHabits = loadHabits();
+        const allLogs: HabitLog[] = [];
+        for (const h of localHabits) {
+          try {
+            const hLogs = await api.fetchHabitLogs(h.id);
+            allLogs.push(...hLogs);
+          } catch { /* skip */ }
+        }
+        if (!cancelled && allLogs.length) {
+          setLogs(allLogs);
+          cacheLogs(allLogs);
+        } else if (!cancelled) {
+          setLogs(loadLogs());
+        }
+      } catch {
+        if (!cancelled) setLogs(loadLogs());
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
-  useEffect(() => {
-    if (habits.length) localStorage.setItem(HABITS_KEY, JSON.stringify(habits));
-  }, [habits]);
-
-  useEffect(() => {
-    localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
-  }, [logs]);
+  // Cache to localStorage on change
+  useEffect(() => { if (habits.length) cacheHabits(habits); }, [habits]);
+  useEffect(() => { cacheLogs(logs); }, [logs]);
 
   const toggleHabit = useCallback((habitId: string, date: string) => {
     setLogs(prev => {
       const existing = prev.find(l => l.habitId === habitId && l.date === date);
+      const newCompleted = !existing?.completed;
+      const log: HabitLog = { habitId, date, completed: newCompleted };
+
+      // Fire-and-forget API call
+      api.logHabitApi(habitId, log).catch(() => {});
+
       if (existing) {
-        return existing.completed
-          ? prev.filter(l => !(l.habitId === habitId && l.date === date))
-          : prev.map(l =>
-              l.habitId === habitId && l.date === date
-                ? { ...l, completed: true }
-                : l,
-            );
+        return newCompleted
+          ? prev.map(l =>
+              l.habitId === habitId && l.date === date ? { ...l, completed: true } : l,
+            )
+          : prev.filter(l => !(l.habitId === habitId && l.date === date));
       }
-      return [...prev, { habitId, date, completed: true }];
+      return [...prev, log];
     });
   }, []);
 
@@ -82,18 +123,26 @@ export function HabitProvider({ children }: { children: ReactNode }) {
 
   const addHabit = useCallback((habit: Habit) => {
     setHabits(prev => [...prev, habit]);
+    api.createHabit(habit).catch(() => {});
   }, []);
 
   const updateHabit = useCallback((habit: Habit) => {
     setHabits(prev => prev.map(h => (h.id === habit.id ? habit : h)));
+    api.updateHabitApi(habit).catch(() => {});
   }, []);
 
   const deleteHabit = useCallback((id: string) => {
     setHabits(prev => prev.filter(h => h.id !== id));
+    api.deleteHabitApi(id).catch(() => {});
   }, []);
 
   const archiveHabit = useCallback((id: string) => {
-    setHabits(prev => prev.map(h => (h.id === id ? { ...h, archived: !h.archived } : h)));
+    setHabits(prev => {
+      const updated = prev.map(h => (h.id === id ? { ...h, archived: !h.archived } : h));
+      const habit = updated.find(h => h.id === id);
+      if (habit) api.updateHabitApi(habit).catch(() => {});
+      return updated;
+    });
   }, []);
 
   return (
