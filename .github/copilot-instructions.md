@@ -7,9 +7,11 @@ BetterDay is a mobile-first PWA for daily habit tracking with mood check-ins, re
 - **Frontend**: React 18, TypeScript, Vite
 - **Styling**: Tailwind CSS v4 (uses `@theme` block in `src/index.css`, NOT `tailwind.config.ts`)
 - **State**: React Context + localStorage persistence (no Redux, no external state library)
-- **AI**: Groq API (Llama 3.1 8B) via OpenAI-compatible REST endpoint
+- **AI**: Azure AI Foundry (gpt-4o-mini) — interim: Groq API (Llama 3.1 8B) via OpenAI-compatible REST endpoint
+- **Backend**: Azure Functions (.NET 8 isolated worker), Azure Table Storage
 - **Browser APIs**: Web Speech API (`en-AU`), Notifications API
-- **Infrastructure**: Azure Static Web Apps, Azure Functions (.NET 8), Azure Table Storage, Bicep IaC
+- **Infrastructure**: Azure Static Web Apps, Azure Functions, Azure Table Storage, Azure AI Foundry, Bicep IaC
+- **Auth**: Microsoft Live SSO via Azure SWA built-in auth + AAD app registration
 - **CI/CD**: GitHub Actions
 
 ## Theming — Midnight Focus Dark Theme
@@ -31,7 +33,8 @@ All UI must use the custom CSS variables defined in `src/index.css`. Never use d
 ## Component Patterns
 - **Controlled components**: Parent owns state, child receives values + callbacks via props.
 - **Context pattern**: Each domain has its own Context + Provider (HabitContext, MoodContext, CoachContext, ReminderContext). Providers wrap the app in `App.tsx`.
-- **localStorage persistence**: Contexts read from and write to localStorage. No backend API calls yet.
+- **API-first with localStorage fallback**: Contexts call `/api/` endpoints first, fall back to localStorage for offline support. Writes are optimistic (update UI immediately, fire-and-forget API call).
+- **Dev mode bypass**: `import.meta.env.DEV` skips API calls and auth — uses localStorage only.
 - **Pages** live in `src/pages/`, reusable UI in `src/components/{domain}/`, services in `src/services/`, contexts in `src/context/`.
 
 ## Styling Rules
@@ -53,7 +56,47 @@ All UI must use the custom CSS variables defined in `src/index.css`. Never use d
 - Do not expose secrets via Bicep outputs — use `existing` resource references instead of `listKeys()`.
 - GitHub Actions workflows are in `.github/workflows/`.
 
-## Testing
+## Testing — Test Driven Development (TDD)
+Follow TDD for all new code: **write tests first**, then implement to make them pass.
+
+### TDD Workflow
+1. **Red** — Write a failing test that describes the desired behavior
+2. **Green** — Write the minimum code to make the test pass
+3. **Refactor** — Clean up the code while keeping tests green
+
+### Coverage Requirements
+- **Minimum 80% code coverage** across the codebase
+- All new features must ship with tests — no untested code in PRs
+- Critical paths (auth, API calls, streak calculation, data persistence) must have >90% coverage
+
+### Frontend Testing
+- **Unit tests**: Vitest + React Testing Library for components, hooks, and services
+- **E2E tests**: Playwright (config in `playwright.config.ts`, tests in `e2e/`)
+- Run unit tests: `npm test`
+- Run E2E tests: `npx playwright test`
+- Run coverage: `npm test -- --coverage`
+
+### Backend Testing (.NET)
+- **Unit tests**: xUnit + Moq for Azure Functions and services
+- Run: `dotnet test` in the `api/` directory
+- Test the `StatsCalculator`, `AuthHelper`, and all Function endpoint handlers
+
+### What to Test
+- **Components**: Render output, user interactions, prop handling, edge cases
+- **Contexts**: State transitions, API call behavior, localStorage fallback
+- **Services**: API client responses, error handling, auth helper logic
+- **Streak logic**: Active-day-aware calculations, edge cases (no logs, gaps, timezone boundaries)
+- **E2E**: Login flow, habit CRUD, daily save flow, navigation
+
+### Test File Conventions
+- Frontend unit tests: co-located as `*.test.ts` / `*.test.tsx` next to source files
+- E2E tests: in `e2e/` directory as `*.spec.ts`
+- Backend tests: in `api/Tests/` directory
+
+## Build & Run
 - Build: `npm run build` (runs `tsc -b && vite build`)
 - Type check: `npx tsc --noEmit`
-- E2E: Playwright (config in `playwright.config.ts`)
+- Unit tests: `npm test`
+- E2E tests: `npx playwright test`
+- Backend build: `dotnet build` (in `api/`)
+- Backend tests: `dotnet test` (in `api/`)
