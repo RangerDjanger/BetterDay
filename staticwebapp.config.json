@@ -5,10 +5,6 @@
       "allowedRoles": ["authenticated"]
     },
     {
-      "route": "/.auth/login/aad",
-      "statusCode": 200
-    },
-    {
       "route": "/.auth/login/github",
       "statusCode": 404
     },
@@ -36,7 +32,7 @@
   },
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/assets/*", "/api/*"]
+    "exclude": ["/assets/*", "/api/*", "/.auth/*"]
   },
   "globalHeaders": {
     "X-Content-Type-Options": "nosniff",
